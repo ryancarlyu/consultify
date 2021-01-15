@@ -11,7 +11,7 @@ from pptx.util import Pt
 def marvintable(df,filepath="./Consultify.pptx",cell_width=1.5,cell_height=0.5,\
                 slide_title="",cell_font_size=16,title_font_size=30):
   """
-  Prints what the animals name is and what sound it makes.
+  Turns pandas DataFrames into consulting-style PowerPoint slides
 
   Parameters
   ----------
