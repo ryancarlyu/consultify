@@ -8,6 +8,57 @@ from pptx.enum.text import PP_ALIGN
 from pptx.util import Inches
 from pptx.util import Pt
 
+from pptx.oxml.xmlchemy import OxmlElement
+
+def SubElement(parent, tagname, **kwargs):
+        element = OxmlElement(tagname)
+        element.attrib.update(kwargs)
+        parent.append(element)
+        return element
+    
+def makeParaBulletPointed(para):
+    """Bullets are set to Arial,
+        actual text can be a different font"""
+    pPr = para._p.get_or_add_pPr()
+    ## Set marL and indent attributes
+    pPr.set('marL','91440') #171450
+    pPr.set('indent','171450') #171450
+    ## Add buFont
+    _ = SubElement(parent=pPr,
+                   tagname="a:buFont",
+                   typeface="Arial",
+                   panose="020B0604020202020204",
+                   pitchFamily="34",
+                   charset="0"
+                   )
+    ## Add buChar
+    _ = SubElement(parent=pPr,
+                   tagname='a:buChar',
+                   char="•")
+
+def _set_cell_border(cell, border_color="000000", dash='solid', border_width='12700',transparent=False):
+    tc = cell._tc
+    tcPr = tc.get_or_add_tcPr()
+    for lines in ['a:lnL','a:lnR','a:lnT']:
+        ln = SubElement(tcPr, lines, w=border_width, cap='flat', cmpd='sng', algn='ctr')
+        solidFill = SubElement(ln, 'a:noFill')
+    for lines in ['a:lnB']:
+        ln = SubElement(tcPr, lines, w=border_width, cap='flat', cmpd='sng', algn='ctr')
+        if transparent == True:
+          solidFill = SubElement(ln, 'a:noFill')
+        else:
+          solidFill = SubElement(ln, 'a:solidFill')
+          if border_color=='black':
+            srgbClr = SubElement(solidFill, 'a:srgbClr', val="000000")
+          elif border_color=='gray':
+            srgbClr = SubElement(solidFill, 'a:srgbClr', val="D3D3D3")
+          else:
+            srgbClr = SubElement(solidFill, 'a:srgbClr', val=border_color)
+          prstDash = SubElement(ln, 'a:prstDash', val=dash)
+          round_ = SubElement(ln, 'a:round')
+          headEnd = SubElement(ln, 'a:headEnd', type='none', w='med', len='med')
+          tailEnd = SubElement(ln, 'a:tailEnd', type='none', w='med', len='med')
+
 def marvintable(df,filepath="./Consultify.pptx",cell_width=1.5,cell_height=0.5,\
                 slide_title="",cell_font_size=16,title_font_size=30):
   """
