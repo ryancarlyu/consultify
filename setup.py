@@ -7,7 +7,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="consultify", # Replace with your own username
-    version="0.0.2.2",
+    version="0.0.2.4",
     author="Ryan Yu",
     author_email="ryu@mba2021.hbs.edu",
     description="Turns analyses on Python into management consulting-style PowerPoint slides.",
